@@ -6,6 +6,12 @@
     "orientation": "portrait",
     "platforms": ["ios", "android", "web"],
     "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.bourbonfinder.app"
+    },
+    "android": {
+      "package": "com.bourbonfinder.app"
+    },
     "extra": {
       "eas": {
         "projectId": "52fca7bd-f77c-408e-b3a9-0292eca9139d"
