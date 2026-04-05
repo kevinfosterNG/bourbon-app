@@ -1,0 +1,82 @@
+name: Expo Build
+
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Build platform (android|ios|all)'
+        required: false
+        default: 'all'
+      profile:
+        description: 'EAS build profile (development|preview|production)'
+        required: false
+        default: 'preview'
+
+jobs:
+  eas-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve label/build settings
+        id: resolve
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "platform=${{ github.event.inputs.platform }}" >> "$GITHUB_OUTPUT"
+            echo "profile=${{ github.event.inputs.profile }}" >> "$GITHUB_OUTPUT"
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          labels='${{ toJson(github.event.pull_request.labels.*.name) }}'
+          match=$(echo "$labels" | tr -d '[]" ' | tr ',' '\n' | grep -E '^eas-build-(android|ios|all):(development|preview|production)$' | head -n 1 || true)
+
+          if [[ -z "$match" ]]; then
+            echo "No eas-build label found; skipping."
+            echo "should_build=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          platform=$(echo "$match" | sed -E 's/^eas-build-([^:]+):(.+)$/\1/')
+          profile=$(echo "$match" | sed -E 's/^eas-build-([^:]+):(.+)$/\2/')
+
+          echo "platform=$platform" >> "$GITHUB_OUTPUT"
+          echo "profile=$profile" >> "$GITHUB_OUTPUT"
+          echo "should_build=true" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node
+        if: steps.resolve.outputs.should_build == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Expo and EAS
+        if: steps.resolve.outputs.should_build == 'true'
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        if: steps.resolve.outputs.should_build == 'true'
+        run: npm ci
+
+      - name: Validate seed data
+        if: steps.resolve.outputs.should_build == 'true'
+        run: npm run seed:validate
+
+      - name: Trigger EAS build
+        if: steps.resolve.outputs.should_build == 'true'
+        run: |
+          eas build \
+            --platform "${{ steps.resolve.outputs.platform }}" \
+            --profile "${{ steps.resolve.outputs.profile }}" \
+            --non-interactive
