@@ -16,7 +16,7 @@
     "seed:validate": "node scripts/validate-seed.mjs"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~5.0.5",
+    "@expo/metro-runtime": "^56.0.15",
     "@supabase/supabase-js": "^2.50.5",
     "expo": "~56.0.12",
     "expo-constants": "~56.0.18",
