@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.expo/
+.codex-expo-web*.log
+.env
+.env.*
+!.env.example

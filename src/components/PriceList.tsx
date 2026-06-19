@@ -8,6 +8,10 @@ type Props = {
 export function PriceList({ listings }: Props) {
   const sorted = [...listings].sort((a, b) => a.price - b.price);
 
+  if (sorted.length === 0) {
+    return <Text style={styles.empty}>No listings yet for this bottle.</Text>;
+  }
+
   return (
     <View style={styles.container}>
       {sorted.map((listing, index) => (
@@ -15,7 +19,7 @@ export function PriceList({ listings }: Props) {
           <View>
             <Text style={styles.storeName}>{listing.store?.name ?? 'Unknown store'}</Text>
             <Text style={styles.details}>
-              {listing.store?.location.city}, {listing.store?.location.state} • {listing.inStock ? 'In stock' : 'Out of stock'}
+              {listing.store?.location.city}, {listing.store?.location.state} / {listing.inStock ? 'In stock' : 'Out of stock'}
             </Text>
           </View>
           <Text style={styles.price}>${listing.price.toFixed(2)}</Text>
@@ -48,6 +52,9 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     marginTop: 4,
     fontSize: 12,
+  },
+  empty: {
+    color: '#9ca3af',
   },
   price: {
     color: '#fbbf24',
