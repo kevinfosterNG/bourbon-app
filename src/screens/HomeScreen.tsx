@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BottleCard } from '../components/BottleCard';
-import { api } from '../services/api';
+import { api, getDataSourceMode } from '../services/api';
 import type { Bottle, Listing, Store } from '../types';
 import { BottleDetail } from './BottleDetail';
 import { BottleSearch } from './BottleSearch';
@@ -16,17 +16,23 @@ export function HomeScreen() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
   const [state, setState] = useState<LoadState>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [dataSourceMode, setDataSourceMode] = useState<'supabase' | 'mock'>('supabase');
 
   useEffect(() => {
     async function load() {
       setState('loading');
+      setErrorMessage('');
+
       try {
         const [bottleData, storeData] = await Promise.all([api.getBottles(), api.getStores()]);
         setBottles(bottleData);
         setStores(storeData);
         setSelectedBottle(bottleData[0] ?? null);
+        setDataSourceMode(getDataSourceMode());
         setState('success');
-      } catch {
+      } catch (error) {
+        setErrorMessage(error instanceof Error ? error.message : 'Unknown error');
         setState('error');
       }
     }
@@ -35,27 +41,29 @@ export function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    if (!selectedBottle) return;
+    if (!selectedBottle) {
+      return;
+    }
+
+    const activeBottle = selectedBottle;
 
     async function loadListings() {
       try {
-        const listingData = await api.getListingsByBottle(selectedBottle.id);
-        const hydratedListings = listingData.map((listing) => ({
-          ...listing,
-          store: stores.find((store) => store.id === listing.storeId),
-        }));
-        setListings(hydratedListings);
+        setListings(await api.getListingsByBottle(activeBottle.id));
       } catch {
         setListings([]);
       }
     }
 
     loadListings();
-  }, [selectedBottle, stores]);
+  }, [selectedBottle]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return bottles;
+    if (!q) {
+      return bottles;
+    }
+
     return bottles.filter((bottle) => `${bottle.name} ${bottle.distillery}`.toLowerCase().includes(q));
   }, [bottles, search]);
 
@@ -64,20 +72,21 @@ export function HomeScreen() {
   }
 
   if (state === 'error') {
-    return <Text style={styles.error}>Unable to load data from Azure Functions API.</Text>;
+    return <Text style={styles.error}>Unable to load data from Supabase. {errorMessage}</Text>;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      <Text style={styles.heading}>🥃 Bourbon Finder</Text>
-      <Text style={styles.subtitle}>Search, compare prices, and check local inventory.</Text>
+      <Text style={styles.heading}>Bourbon Finder</Text>
+      <Text style={styles.subtitle}>Search {bottles.length} bottles and compare prices across {stores.length} stores.</Text>
+      {dataSourceMode === 'mock' ? <Text style={styles.notice}>Using local sample data because the configured Supabase project is unavailable.</Text> : null}
 
       <BottleSearch value={search} onChange={setSearch} />
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Trending bottles</Text>
         {filtered.map((bottle) => (
-          <BottleCard key={bottle.id} bottle={bottle} onPress={(id) => setSelectedBottle(bottles.find((b) => b.id === id) ?? null)} />
+          <BottleCard key={bottle.id} bottle={bottle} onPress={(id) => setSelectedBottle(bottles.find((item) => item.id === id) ?? null)} />
         ))}
       </View>
 
@@ -101,9 +110,14 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     marginTop: 4,
     marginBottom: 12,
+    lineHeight: 20,
   },
   section: {
     marginTop: 6,
+  },
+  notice: {
+    color: '#fbbf24',
+    marginBottom: 12,
   },
   sectionTitle: {
     color: '#f9fafb',

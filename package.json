@@ -8,17 +8,30 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "supabase:apply": "node scripts/apply-supabase-schema.mjs",
+    "supabase:seed": "node scripts/seed-supabase.mjs",
+    "supabase:seed:sql": "node scripts/generate-seed-sql.mjs --write supabase/seed.sql",
+    "supabase:bootstrap": "npm run supabase:apply && npm run supabase:seed",
     "typecheck": "tsc --noEmit",
     "seed:validate": "node scripts/validate-seed.mjs"
   },
   "dependencies": {
+    "@expo/metro-runtime": "~5.0.5",
+    "@supabase/supabase-js": "^2.50.5",
     "expo": "~53.0.0",
+    "expo-constants": "~17.1.7",
+    "expo-modules-core": "~2.5.0",
     "expo-status-bar": "~2.2.3",
     "react": "19.0.0",
-    "react-native": "0.79.2"
+    "react-dom": "19.0.0",
+    "react-native": "0.79.2",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-native-web": "^0.20.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.15.5",
     "@types/react": "~19.0.10",
+    "pg": "^8.16.1",
     "typescript": "~5.8.3"
   }
 }

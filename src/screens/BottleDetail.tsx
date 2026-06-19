@@ -12,7 +12,7 @@ export function BottleDetail({ bottle, listings }: Props) {
     <ScrollView style={styles.container}>
       <Text style={styles.name}>{bottle.name}</Text>
       <Text style={styles.meta}>{bottle.distillery}</Text>
-      <Text style={styles.tagLine}>{bottle.flavorTags.join(' • ')}</Text>
+      <Text style={styles.tagLine}>{bottle.flavorTags.join(' / ')}</Text>
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Price comparison</Text>
