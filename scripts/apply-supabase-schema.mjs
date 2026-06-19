@@ -6,20 +6,16 @@ const client = new Client(loadSupabaseDbEnv());
 
 function getSqlFiles() {
   const migrationsDir = new URL('../supabase/migrations/', import.meta.url);
-  try {
-    const files = readdirSync(migrationsDir, { withFileTypes: true })
-      .filter((entry) => entry.isFile() && entry.name.endsWith('.sql'))
-      .map((entry) => entry.name)
-      .sort();
+  const files = readdirSync(migrationsDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && entry.name.endsWith('.sql'))
+    .map((entry) => entry.name)
+    .sort();
 
-    if (files.length > 0) {
-      return files.map((fileName) => new URL(`../supabase/migrations/${fileName}`, import.meta.url));
-    }
-  } catch {
-    // Fall back to the legacy consolidated schema file when no migrations exist yet.
+  if (files.length === 0) {
+    throw new Error('No SQL migrations found in supabase/migrations.');
   }
 
-  return [new URL('../supabase/schema.sql', import.meta.url)];
+  return files.map((fileName) => new URL(`../supabase/migrations/${fileName}`, import.meta.url));
 }
 
 try {
