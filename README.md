@@ -79,7 +79,7 @@ Run both:
 npm run supabase:bootstrap
 ```
 
-The bootstrap script prefers SQL files in `supabase/migrations/` and falls back to `supabase/schema.sql`.
+The schema runner applies SQL files from `supabase/migrations/` in sorted order.
 
 ## IPv4-only migration path
 
@@ -96,6 +96,10 @@ Reference:
 - [Connect to your database](https://supabase.com/docs/guides/database/connecting-to-postgres)
 - [Available regions](https://supabase.com/docs/guides/platform/regions)
 
+## Legacy cleanup
+
+The repo no longer uses the older Azure Functions or Cosmos DB bootstrap path. Supabase migrations and seed data are the only supported backend bootstrap flow.
+
 ## Important paths
 
 - `src/services/api.ts`: Supabase data access with local fallback
@@ -110,4 +114,4 @@ Reference:
 
 - Expo Android preview build succeeds.
 - The app loads locally.
-- Live Supabase reads still require the schema to exist in the target project.
+- The active data path is Supabase.
