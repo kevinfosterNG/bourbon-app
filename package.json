@@ -20,7 +20,7 @@
     "@supabase/supabase-js": "^2.50.5",
     "expo": "~56.0.12",
     "expo-constants": "~56.0.18",
-    "expo-modules-core": "~2.5.0",
+    "expo-modules-core": "~56.0.17",
     "expo-status-bar": "~56.0.4",
     "react": "19.2.7",
     "react-dom": "19.2.7",
