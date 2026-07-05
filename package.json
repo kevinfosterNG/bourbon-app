@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "^56.0.15",
-    "@supabase/supabase-js": "^2.50.5",
+    "@supabase/supabase-js": "^2.110.0",
     "expo": "~56.0.12",
     "expo-constants": "~56.0.18",
     "expo-modules-core": "~2.5.0",
