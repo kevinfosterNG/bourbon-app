@@ -85,7 +85,7 @@ jobs:
 
       - name: Setup Node
         if: steps.resolve.outputs.should_build == 'true'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: npm
