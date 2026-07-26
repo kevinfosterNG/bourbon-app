@@ -93,6 +93,11 @@ module.exports = ({ config }) => {
     version: '1.0.0',
     orientation: 'portrait',
     platforms: ['ios', 'android', 'web'],
+    plugins: ['expo-status-bar'],
+    web: {
+      bundler: 'metro',
+      output: 'single',
+    },
     assetBundlePatterns: ['**/*'],
     ios: {
       bundleIdentifier: 'com.bourbonfinder.app',
