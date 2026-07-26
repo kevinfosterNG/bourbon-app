@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BottleCard } from '../components/BottleCard';
+import { BottleDetailDrawer } from '../components/BottleDetailDrawer';
 import { api, getDataSourceMode } from '../services/api';
 import type { Bottle, Listing, Store } from '../types';
-import { BottleDetail } from './BottleDetail';
 import { BottleSearch } from './BottleSearch';
-import { StoreMap } from './StoreMap';
 
 type LoadState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -28,7 +27,6 @@ export function HomeScreen() {
         const [bottleData, storeData] = await Promise.all([api.getBottles(), api.getStores()]);
         setBottles(bottleData);
         setStores(storeData);
-        setSelectedBottle(bottleData[0] ?? null);
         setDataSourceMode(getDataSourceMode());
         setState('success');
       } catch (error) {
@@ -77,7 +75,14 @@ export function HomeScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.content}>
-      <Text style={styles.heading}>Bourbon Finder</Text>
+      <View style={styles.brandRow}>
+        <Image
+          accessibilityLabel="Bourbon Brothers logo"
+          source={require('../../assets/branding/bourbon-finder-mark.png')}
+          style={styles.brandMark}
+        />
+        <Text style={styles.heading}>Bourbon Brothers</Text>
+      </View>
       <Text style={styles.subtitle}>Search {bottles.length} bottles and compare prices across {stores.length} stores.</Text>
       {dataSourceMode === 'mock' ? <Text style={styles.notice}>Using local sample data because the configured Supabase project is unavailable.</Text> : null}
 
@@ -90,8 +95,7 @@ export function HomeScreen() {
         ))}
       </View>
 
-      {selectedBottle ? <BottleDetail bottle={selectedBottle} listings={listings} /> : null}
-      {listings[0]?.store ? <StoreMap store={listings[0].store} /> : null}
+      <BottleDetailDrawer bottle={selectedBottle} listings={listings} onClose={() => setSelectedBottle(null)} />
     </ScrollView>
   );
 }
@@ -101,10 +105,20 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
   },
+  brandRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  brandMark: {
+    height: 42,
+    marginRight: 10,
+    width: 42,
+  },
   heading: {
     color: '#f9fafb',
-    fontSize: 28,
-    fontWeight: '800',
+    fontFamily: 'Georgia',
+    fontSize: 29,
+    fontWeight: '700',
   },
   subtitle: {
     color: '#9ca3af',

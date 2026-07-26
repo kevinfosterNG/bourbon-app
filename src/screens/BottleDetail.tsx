@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { PriceList } from '../components/PriceList';
 import type { Bottle, Listing } from '../types';
 
@@ -9,7 +9,7 @@ type Props = {
 
 export function BottleDetail({ bottle, listings }: Props) {
   return (
-    <ScrollView style={styles.container}>
+    <View>
       <Text style={styles.name}>{bottle.name}</Text>
       <Text style={styles.meta}>{bottle.distillery}</Text>
       <Text style={styles.tagLine}>{bottle.flavorTags.join(' / ')}</Text>
@@ -18,14 +18,11 @@ export function BottleDetail({ bottle, listings }: Props) {
         <Text style={styles.sectionTitle}>Price comparison</Text>
         <PriceList listings={listings} />
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   name: {
     color: '#f9fafb',
     fontSize: 24,
