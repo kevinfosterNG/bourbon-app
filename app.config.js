@@ -88,7 +88,7 @@ module.exports = ({ config }) => {
 
   return {
     ...config,
-    name: 'Bourbon Finder',
+    name: 'Bourbon Brothers',
     slug: 'bourbon-finder',
     version: '1.0.0',
     orientation: 'portrait',
@@ -96,6 +96,7 @@ module.exports = ({ config }) => {
     plugins: ['expo-status-bar'],
     web: {
       bundler: 'metro',
+      favicon: './assets/branding/bourbon-finder-favicon.png',
       output: 'single',
     },
     assetBundlePatterns: ['**/*'],
