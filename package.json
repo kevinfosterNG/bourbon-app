@@ -17,9 +17,9 @@
     "seed:validate": "node scripts/validate-seed.mjs"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~57.0.13",
-    "@supabase/supabase-js": "^2.116.0",
-    "expo": "~57.0.23",
+    "@expo/metro-runtime": "~57.0.16",
+    "@supabase/supabase-js": "^2.117.1",
+    "expo": "~57.0.25",
     "expo-constants": "~57.0.14",
     "expo-status-bar": "~57.0.1",
     "react": "19.3.0",
