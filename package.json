@@ -17,21 +17,21 @@
     "seed:validate": "node scripts/validate-seed.mjs"
   },
   "dependencies": {
-    "@expo/metro-runtime": "~57.0.13",
-    "@supabase/supabase-js": "^2.116.0",
-    "expo": "~57.0.23",
+    "@expo/metro-runtime": "~57.0.16",
+    "@supabase/supabase-js": "^2.117.2",
+    "expo": "~57.0.26",
     "expo-constants": "~57.0.14",
     "expo-status-bar": "~57.0.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.87.1",
     "react-native-url-polyfill": "^4.0.0",
-    "react-native-web": "^0.21.2"
+    "react-native-web": "^0.21.3"
   },
   "devDependencies": {
     "@types/pg": "^8.23.1",
     "@types/react": "~19.3.0",
-    "pg": "^8.23.0",
+    "pg": "^8.23.1",
     "typescript": "~7.0.2"
   },
   "overrides": {
